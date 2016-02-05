@@ -1,4 +1,6 @@
-var b = [9,3,2,78,0] 
+"use strict"
+
+var b = [9,3,2,28,0,13,5,2,6,8,9] //array
 var c = 0 //counter of loops
 var j = b.length //number of iterations required to go through entire array
 var i = 0 // iterator within loop
@@ -6,8 +8,8 @@ var i = 0 // iterator within loop
 function setUp (){
 	var yExtent = d3.extent(b);
 	var radiusScale = d3.scale.linear().domain(yExtent).range([25,50]);
-	var yScale = d3.scale.linear().domain(yExtent).range([480, 0]);
-	yAxis = d3.svg.axis().scale(yScale).orient("right").ticks(10).tickSize(730);
+	var yScale = d3.scale.linear().domain(yExtent).range([450, 30]);
+	var yAxis = d3.svg.axis().scale(yScale).orient("right").ticks(20).tickSize(730);
 	d3.select("svg").append("g").attr("id", "yAxisG").call(yAxis);
 
 	d3.select("svg").selectAll("circle")
@@ -15,47 +17,55 @@ function setUp (){
 		.enter()
 		.append("circle")
 		.attr("r", function(d){ return radiusScale(d);	})
-		.attr("cx", function(d,i){	return i * 100;	})
+		.attr("cx", function(d,i){	return 50 + i * (730/b.length);	})
 		.attr("cy", function(d){ return yScale(d);	})
 	};
 
+function updateSvg (b){
+	var yExtent = d3.extent(b);
+	var radiusScale = d3.scale.linear().domain(yExtent).range([25,50]);
+	var yScale = d3.scale.linear().domain(yExtent).range([450, 30]);
+	var yAxis = d3.svg.axis().scale(yScale).orient("right").ticks(20).tickSize(730);
+	d3.select("svg").append("g").attr("id", "yAxisG").call(yAxis);
 
+	d3.select("svg").selectAll("circle").data(b).transition().duration(2000)
+	.attr("r", function(d){ return radiusScale(d);	})
+	.attr("cx", function(d,i){	return 50 + i * (730/b.length);	})
+	.attr("cy", function(d){ return yScale(d);	})
+	};
 
 function pendleSort (b){
-	for (j=b.length; j>0; j--, c++){
+	for (var j=b.length; j>0; j--, c++){
 		if (c%2==0){
 			// start forward loop
 			for (i=0; i<b.length-c; i++){
 				if (b[i]>b[i+1]){
-					x = b[i+1]
+					var x = b[i+1]
 					b[i+1] = b[i]
 					b[i] = x
-					console.log("sort forward");
 				} else {
-					console.log("noSort forward");
+					console.log("noSort forward")
 				};
+			updateSvg(b);
+			console.log("b-forward"+b);
 			}; //end forward loop
 		} else {
 			//start backward loop
-			for(z=b.length-c;z>0;z--){
+			for(var z=b.length-c;z>0;z--){
 				if(b[z]<b[z-1]){
-					y = b[z-1]
+					var y = b[z-1]
 					b[z-1] = b[z]
 					b[z] = y
-					console.log("sort forward");
 				} else {
 					console.log("noSort backward");
 				};
+			updateSvg(b);
+			console.log("b-backward"+b);
 			};//end backward loop
 		};// end else
-		d3.selectAll("svg")
-		.data(b)
-		.transition()
-		.duration(5000);
-		//.attr("cx", function(d,i){	return i * 100;	})
-		//.attr("r", function(d){ return radiusScale(d);	})
-		//.attr("cy", function(d){ return yScale(d);	})
 	};//end j loop
+	console.log("final sort"+b);
 };//end pendleSort
 
-console.log("final sort"+b);
+//pendleSort(b);
+console.log("initial sort"+b);
