@@ -1,6 +1,7 @@
 "use strict"
 
 var b = [9,3,2,28,0,13,5,2,6,8,9] //array
+var bNormal = b //array for normal bubbleSort
 var c = 0 //counter of loops
 var j = b.length //number of iterations required to go through entire array
 var i = 0 // iterator within loop
@@ -28,14 +29,28 @@ function updateSvg (b){
 	var yAxis = d3.svg.axis().scale(yScale).orient("right").ticks(20).tickSize(730);
 	d3.select("svg").append("g").attr("id", "yAxisG").call(yAxis);
 
-	d3.select("svg").selectAll("circle").data(b).transition().duration(2000)
+	d3.select("svg").selectAll("circle").data(b).transition().duration(1000)
 	.attr("r", function(d){ return radiusScale(d);	})
 	.attr("cx", function(d,i){	return 50 + i * (730/b.length);	})
 	.attr("cy", function(d){ return yScale(d);	})
 	};
 
+
+/*function bubbleSort (b){
+	for (j; j>0; j--){
+		for (i=0; i<j; i++){
+			if(b[i]>b[i+1]){
+				var x = b[i+1]
+				b[i+1] = b[i]
+				b[i] = x
+			}; //end if
+		updateSvg(b);
+		};//end i loop
+	};//end j loop
+};//end bubbleSort*/
+
 function pendleSort (b){
-	for (var j=b.length; j>0; j--, c++){
+	for (j; j>0; j--, c++){
 		if (c%2==0){
 			// start forward loop
 			for (i=0; i<b.length-c; i++){
@@ -43,9 +58,7 @@ function pendleSort (b){
 					var x = b[i+1]
 					b[i+1] = b[i]
 					b[i] = x
-				} else {
-					console.log("noSort forward")
-				};
+				};//end if
 			updateSvg(b);
 			console.log("b-forward"+b);
 			}; //end forward loop
@@ -56,9 +69,7 @@ function pendleSort (b){
 					var y = b[z-1]
 					b[z-1] = b[z]
 					b[z] = y
-				} else {
-					console.log("noSort backward");
-				};
+				}; // end if
 			updateSvg(b);
 			console.log("b-backward"+b);
 			};//end backward loop
